@@ -116,19 +116,24 @@ function init() {
 
   var checkboxes = list.find('input:checkbox');
   var radios = list.find('input:radio');
-
-  // Networks to auto reconnect
-  activated.forEach(function (id) {
-    var idBox = findById(checkboxes, id);
-    idBox.prop('checked', true);
-    if (enabled) {
-      try {
-        SESSION.connections.get(id).reconnect();
-      } catch (e) {
-        console.error("Can't find connection ID: " + id);
+   
+  function autoReconnect () {
+    // Networks to auto reconnect
+    console.log('autoReconnect called');
+    activated.forEach(function (id) {
+      var idBox = findById(checkboxes, id);
+      idBox.prop('checked', true);
+      if (enabled) {
+        try {
+          SESSION.connections.get(id).reconnect();
+        } catch (e) {
+          console.error("Can't find connection ID: " + id);
+        }
       }
-    }
-  });
+    });
+  }
+  autoReconnect();
+  setInterval(autoReconnect, 60000);
 
   // One network to focus
   if (!isNaN(focusedNetwork) && isNaN(focusedChannel)) {
